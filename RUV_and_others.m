@@ -31,7 +31,11 @@ x2_at_t = h1 * node1_x2 + h2 * node2_x2 + h3 * node3_x2 + h4 * node4_x2;
 
 % X = [1 0.1*t;0 1];
 
-
+syms X [2 2]
+X(1,1) = diff(x1_at_t, x1);
+X(1,2) = diff(x1_at_t, x2);
+X(2,1) = diff(x2_at_t, x1);
+X(2,2) = diff(x2_at_t, x2);
 
 C = X.'*X;
 [R_L, gamma2] = eig(C);
