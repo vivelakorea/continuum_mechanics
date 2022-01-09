@@ -12,14 +12,14 @@ node4_u1_dot = 0.1;
 node4_u2_dot = 0.2;
 
 %      initial position         u
-node1_x1 =       1           +   node1_u1_dot * t;
-node1_x2 =       1           +   node1_u2_dot * t;
-node2_x1 =      -1           +   node2_u1_dot * t;
-node2_x2 =       1           +   node2_u2_dot * t;
-node3_x1 =      -1           +   node3_u1_dot * t;
-node3_x2 =      -1           +   node3_u2_dot * t;
-node4_x1 =       1           +   node4_u1_dot * t;
-node4_x2 =      -1           +   node4_u2_dot * t;
+node1_x1 =       1           +   int(node1_u1_dot, [0, t]);
+node1_x2 =       1           +   int(node1_u2_dot, [0, t]);
+node2_x1 =      -1           +   int(node2_u1_dot, [0, t]);
+node2_x2 =       1           +   int(node2_u2_dot, [0, t]);
+node3_x1 =      -1           +   int(node3_u1_dot, [0, t]);
+node3_x2 =      -1           +   int(node3_u2_dot, [0, t]);
+node4_x1 =       1           +   int(node4_u1_dot, [0, t]);
+node4_x2 =      -1           +   int(node4_u2_dot, [0, t]);
           
 h1 = 0.25 * (1 + x1) * (1 + x2);
 h2 = 0.25 * (1 - x1) * (1 + x2);
@@ -52,3 +52,20 @@ D_E = R_E.' * D * R_E;
 W_E = R_E.' * W * R_E;
 eta_dot = X.' * D * X;
 
+syms gamma_dot [2 2]
+gamma_dot(1,1) = gamma(1,1) * D_E(1,1);
+gamma_dot(1,2) = 0;
+gamma_dot(2,1) = 0;
+gamma_dot(2,2) = gamma(2,2) * D_E(2,2);
+
+syms omega_L [2 2]
+omega_L(1,1) = 0;
+omega_L(1,2) = ((2 * gamma(2,2) * gamma(1,1)) / (gamma(2,2)^2 - gamma(1,1)^2)) * D_E(1,2);
+omega_L(2,1) = ((2 * gamma(1,1) * gamma(2,2)) / (gamma(1,1)^2 - gamma(2,2)^2)) * D_E(2,1);
+omega_L(2,2) = 0;
+
+syms omega_E [2 2]
+omega_E(1,1) = 0;
+omega_E(1,2) = W_E(1,2) + ((gamma(2,2)^2 + gamma(1,1)^2)/(gamma(2,2)^2 - gamma(1,1)^2)) * D_E(1,2);
+omega_E(2,1) = W_E(2,1) + ((gamma(1,1)^2 + gamma(2,2)^2)/(gamma(1,1)^2 - gamma(2,2)^2)) * D_E(2,1);
+omega_E(2,2) = 0;
